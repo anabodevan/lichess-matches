@@ -1,0 +1,47 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - "*.qmd"
+
+website:
+  favicon: images/favicon.png
+  search: false
+  navbar:
+  
+    title: ""
+    logo: images/favicon-large.svg
+    right:
+      - icon: github
+        href: https://github.com/anabodevan/lichess-matches
+        text: "anabodevan/lichess-matches"
+  
+  page-footer:
+    left: "Made with Quarto by Ana Bodevan, 2025"
+    right:
+      - icon: github
+        href: https://github.com/anabodevan
+      - icon: linkedin
+        href: https://www.linkedin.com/in/ana-luisa-bodevan/
+      - icon: envelope
+        href: mailto:anabodevan01@gmail.com
+      - text: "Favicon by Icon8"
+        href: https://icons8.com/icon/t3TISsqmXAxI/jellyfish
+    
+format:
+  html:
+    theme: [litera, custom.scss]
+    toc: false
+    page-layout: article
+    grid:
+      sidebar-width: 250px
+      body-width: 900px
+      margin-width: 200px
+
+execute:
+  warning: false
+  message: false
+  freeze: auto
+
+resources:
+  - fonts/*

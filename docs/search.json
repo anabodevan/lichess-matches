@@ -1,0 +1,51 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "An Analysis of Lichess Chess Matches",
+    "section": "",
+    "text": "This is a project of data cleaning and analysis of data of +20.000 Lichess chess matches. The objective is to explore common matches patterns and identify variables that may influence in the match outcome."
+  },
+  {
+    "objectID": "index.html#technology-and-data",
+    "href": "index.html#technology-and-data",
+    "title": "An Analysis of Lichess Chess Matches",
+    "section": "Technology and Data",
+    "text": "Technology and Data\n\nPython\n\nPandas, NumPy\nMatplotlib, Plotly\n\n\nData is from the Chess Game Dataset (Lichess) on Kaggle.\n\nData Description\nGame ID;\nRated (T/F);\nStart Time; End Time;\nNumber of Turns;\nGame Status; Winner;\nTime Increment;\nWhite Player ID; White Player Rating;\nBlack Player ID; Black Player Rating;\nAll Moves in Standard Chess Notation;\nOpening Eco (Standardised Code for any given opening); Opening Name; Opening Ply (Number of moves in the opening phase)"
+  },
+  {
+    "objectID": "index.html#setup-and-cleaning-data",
+    "href": "index.html#setup-and-cleaning-data",
+    "title": "An Analysis of Lichess Chess Matches",
+    "section": "0. Setup and Cleaning Data",
+    "text": "0. Setup and Cleaning Data\nThe data_cleaning.py script cleaned the original games.csv dataset and saved it as games_clean.csv. The process was quick and easy, given that the data was already very well structured. There were no missing values, and the only necessary changes were cleaning out duplicate data and creating a column for openings without their variants, for simplicity."
+  },
+  {
+    "objectID": "index.html#descriptive-analysis",
+    "href": "index.html#descriptive-analysis",
+    "title": "An Analysis of Lichess Chess Matches",
+    "section": "1. Descriptive Analysis",
+    "text": "1. Descriptive Analysis\nThe eda.py script generated the insights presented. The following code load the necessary libraries, data and calculates the rating_difference variable.\n\n\nCode\nimport pandas as pd\nimport numpy as np\nimport seaborn as sns\nimport matplotlib.pyplot as plt\nimport plotly.express as px\n\n# Load Data\ndf = pd.read_csv('data/games_clean.csv')\n\n# Feature Engineering\ndf['rating_difference'] = df['white_rating'] - df['black_rating']\n\n\n\n1.1 Summary Statistics\nThe table below provides a summary of the core numerical features, highlighting the central tendencies and spread of the data.\n\n\nCode\nnumerical_cols = ['turns', 'white_rating', 'black_rating', 'opening_ply', 'rating_difference']\ndf[numerical_cols].describe().round(2)\n\n\n\n\n\n\nSummary Statistics of Numerical Features\n\n\n\nturns\nwhite_rating\nblack_rating\nopening_ply\nrating_difference\n\n\n\n\ncount\n19429.00\n19429.00\n19429.00\n19429.00\n19429.00\n\n\nmean\n61.06\n1597.70\n1589.91\n4.84\n7.79\n\n\nstd\n33.14\n288.14\n288.83\n2.79\n246.12\n\n\nmin\n3.00\n784.00\n789.00\n1.00\n-1605.00\n\n\n25%\n38.00\n1401.00\n1395.00\n3.00\n-106.00\n\n\n50%\n56.00\n1568.00\n1563.00\n4.00\n3.00\n\n\n75%\n79.00\n1792.00\n1784.00\n6.00\n121.00\n\n\nmax\n349.00\n2700.00\n2621.00\n28.00\n1499.00\n\n\n\n\n\n\n\n\nRatings: The average rating for both players is high (around 1600), but the range is vast 288 points).\nGame Length: The mean game length is 61.06 turns (median 56), showing a slight positive skew (more short games than very long ones).\nRating Difference: The mean difference is 7.79 (White - Black), suggesting White is, on average, the slightly higher-rated player. However, the large standard deviation 246.12 confirms significant rating disparities exist in many individual matchups.\n\n\n\n1.2 Feature Correlation\nThe correlation matrix reveals the linear relationships between the numerical variables.\n\n\n\n\n\n\nPlayer Matching: The strongest correlation is between white_rating and black_rating ($\\mathbf{0.64}$), confirming that players are typically matched against opponents of a similar skill level.\nRating vs. Outcome Potential: The rating_difference is strongly correlated with white_rating (0.42) and negatively correlated with black_rating (-0.43). This confirms the engineered feature is highly predictive of the rating skew towards one color.\nTurns: Game length has only a weak correlation with ratings (0.12 to 0.15)."
+  },
+  {
+    "objectID": "index.html#game-outcome-analysis",
+    "href": "index.html#game-outcome-analysis",
+    "title": "An Analysis of Lichess Chess Matches",
+    "section": "2. Game Outcome Analysis",
+    "text": "2. Game Outcome Analysis\n\n2.1 Winner and Victory Stats Distribution\n\n\nWinner: White wins the largest share of games, consistent with the first-move advantage in chess.\nVictory Status: Resignation is the most common end-game status, followed by Checkmate, suggesting players know they are rarely able to revert a losing position.\n\n\n\n2.2 Rating Influence on Outcome\nThe histogram below shows the distribution of the rating difference, separated by the winner.\n\n\n\n\n\nThe distributions are distinctly separated. The mass of the “white” wins is centered where White had a positive rating advantage, and the mass of the “black” wins is centered where Black had a positive rating advantage (negative rating difference). This visually confirms that the higher-rated player is more likely to win, regardless of color.\n\n\n2.3 Game Lenght by Victory Status\nThe box plot illustrates the typical number of turns required for each victory status.\n\n\n\n\n\nObservations:\n\nLongest Games: Games ending in a Draw tend to be the longest (highest median and upper quartile), as balanced positions require extensive play.\nResignation/Mate: These outcomes occur at a similar median game length, suggesting that decisive mistakes or tactical breakthroughs happen mid-game."
+  },
+  {
+    "objectID": "index.html#opening-analysis",
+    "href": "index.html#opening-analysis",
+    "title": "An Analysis of Lichess Chess Matches",
+    "section": "3. Opening Analysis",
+    "text": "3. Opening Analysis\n\n3.1 Top 10 Openings Winning Rate\n\n\nCode\ntop_openings = df['opening_name'].value_counts().nlargest(10).index.tolist()\ndf_top_openings = df[df['opening_name'].isin(top_openings)]\nopening_win_counts = df_top_openings.groupby('opening_name')['winner'].value_counts().unstack(fill_value=0)\ntotal_games = opening_win_counts.sum(axis=1)\nopening_win_rates = opening_win_counts.divide(total_games, axis=0) * 100\nopening_win_rates = opening_win_rates.sort_values(by='white', ascending=False)\nopening_win_rates[['white', 'black', 'draw']].round(2)\n\n\n\n\n\n\nWinning Rates for Top 10 Most Frequent Openings (%)\n\n\nwinner\nwhite\nblack\ndraw\n\n\nopening_name\n\n\n\n\n\n\n\nScandinavian Defense: Mieses-Kotroc Variation\n62.85\n34.78\n2.37\n\n\nItalian Game: Two Knights Defense\n54.81\n41.84\n3.35\n\n\nScotch Game\n53.41\n42.42\n4.17\n\n\nHorwitz Defense\n51.98\n45.54\n2.48\n\n\nQueen's Pawn Game: Mason Attack\n50.43\n44.35\n5.22\n\n\nFrench Defense: Knight Variation\n50.19\n44.53\n5.28\n\n\nQueen's Pawn Game: Chigorin Variation\n48.66\n47.77\n3.57\n\n\nSicilian Defense\n41.86\n53.78\n4.36\n\n\nSicilian Defense: Bowdler Attack\n40.48\n55.10\n4.42\n\n\nVan't Kruijs Opening\n33.23\n62.02\n4.75\n\n\n\n\n\n\n\n\nWhite’s Best: The Scandinavian Defense: Mieses-Kotroc Variation heavily favors White, who wins 62.85 of the time.\nBlack’s Best: The Van’t Kruijs Opening heavily favors Black, who wins 62% of the time. This suggests that White’s non-standard opening choice is often punished."
+  },
+  {
+    "objectID": "index.html#conclusions",
+    "href": "index.html#conclusions",
+    "title": "An Analysis of Lichess Chess Matches",
+    "section": "4. Conclusions",
+    "text": "4. Conclusions\nThe primary factor influencing the game outcome is the rating difference between the players, confirming that the higher-rated participant is statistically favored to win, regardless of playing color. White maintains a slight overall winning edge, supporting the notion of the first-move advantage.\nGame endings are predominantly characterized by resignation or checkmate rather than time or draw-related outcomes, indicating a decisive result is achieved in the majority of contests. Furthermore, the analysis of popular openings revealed substantial imbalances, with specific lines, such as the Scandinavian Defense: Mieses-Kotroc Variation and the Van’t Kruijs Opening, showing stark bias toward one color."
+  }
+]
