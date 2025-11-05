@@ -148,7 +148,7 @@ opening_win_rates[['white', 'black', 'draw']].round(2)
 
 -   **Black's Best:** The **Van't Kruijs Opening** heavily favors Black, who wins **62%** of the time. This suggests that White's non-standard opening choice is often punished.
 
-## 4. Conclusions 
+## 4. Conclusions
 
 The primary factor influencing the game outcome is the **rating difference** between the players, confirming that the higher-rated participant is statistically favored to win, regardless of playing color. White maintains a slight overall winning edge, supporting the notion of the first-move advantage.
 

@@ -1,0 +1,5 @@
+_site/* linguist-vendored
+_publish/* linguist-vendored
+*.html linguist-vendored
+*.css linguist-vendored
+*.scss linguist-vendored
