@@ -3,3 +3,5 @@ _publish/* linguist-vendored
 *.html linguist-vendored
 *.css linguist-vendored
 *.scss linguist-vendored
+*.js linguist-vendored
+*.mjs linguist-vendored
